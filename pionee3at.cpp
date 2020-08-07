@@ -133,8 +133,6 @@ void lidarCallback(const sensor_msgs::LaserScan::ConstPtr &scan) {
 void controllerNameCallback(const std_msgs::String::ConstPtr &name) {
   controllerCount++;
   controllerList.push_back(name->data);
-  ROS_INFO("Controller #%d: %s.", controllerCount, controllerList.back().c_str());
-  ROS_INFO("Controller list: $s",controllerList)
 }
 
 void quit(int sig) {
@@ -147,13 +145,13 @@ void quit(int sig) {
 
 int main(int argc, char **argv) {
   std::string controllerName;
-  // create a node named 'pioneer3at' on ROS network
+  // criação do node pioneer3at
   ros::init(argc, argv, "pioneer3at", ros::init_options::AnonymousName);
   n = new ros::NodeHandle;
 
   signal(SIGINT, quit);
 
-  // subscribe to the topic model_name to get the list of availables controllers
+  // subscreve o node ROS controller 
   ros::Subscriber nameSub = n->subscribe("model_name", 100, controllerNameCallback);
   while (controllerCount == 0 || controllerCount < nameSub.getNumPublishers()) {
     ros::spinOnce();
@@ -164,38 +162,18 @@ int main(int argc, char **argv) {
 
   timeStepClient = n->serviceClient<webots_ros::set_int>("pioneer3at/robot/time_step");
   timeStepSrv.request.value = TIME_STEP;
-
-  // if there is more than one controller available, it let the user choose
-  if (controllerCount == 1)
-    controllerName = controllerList[0];
-  else {
-    int wantedController = 0;
-    std::cout << "Choose the # of the controller you want to use:\n";
-    std::cin >> wantedController;
-    if (1 <= wantedController && wantedController <= controllerCount)
-      controllerName = controllerList[wantedController - 1];
-    else {
-      ROS_ERROR("Invalid number for controller choice.");
-      return 1;
-    }
-  }
-  ROS_INFO("Using controller: '%s'", controllerName.c_str());
-  // leave topic once it is not necessary anymore
+  } 
   nameSub.shutdown();
 
   // motores inicia
   for (int i = 0; i < NMOTORS; ++i) {
-    // position
+    // posição
     ros::ServiceClient set_position_client;
     webots_ros::set_float set_position_srv;
     set_position_client = n->serviceClient<webots_ros::set_float>(std::string("pioneer3at/") + std::string(motorNames[i]) +
                                                                   std::string("/set_position"));
 
     set_position_srv.request.value = INFINITY;
-    if (set_position_client.call(set_position_srv) && set_position_srv.response.success)
-      ROS_INFO("Position set to INFINITY for motor %s.", motorNames[i]);
-    else
-      ROS_ERROR("Failed to call service set_position on motor %s.", motorNames[i]);
 
     // speed
     ros::ServiceClient set_velocity_client;
@@ -204,10 +182,6 @@ int main(int argc, char **argv) {
                                                                   std::string("/set_velocity"));
 
     set_velocity_srv.request.value = 0.0;
-    if (set_velocity_client.call(set_velocity_srv) && set_velocity_srv.response.success == 1)
-      ROS_INFO("Velocity set to 0.0 for motor %s.", motorNames[i]);
-    else
-      ROS_ERROR("Failed to call service set_velocity on motor %s.", motorNames[i]);
   }
 
   // ativa lidar
@@ -217,57 +191,27 @@ int main(int argc, char **argv) {
 
   set_lidar_client = n->serviceClient<webots_ros::set_int>("pioneer3at/Sick_LMS_291/enable");
   lidar_srv.request.value = TIME_STEP;
-  if (set_lidar_client.call(lidar_srv) && lidar_srv.response.success) {
-    ROS_INFO("Lidar enabled.");
+  if (set_lidar_client.call(lidar_srv) && lidar_srv.response.success) 
     sub_lidar_scan = n->subscribe("pioneer3at/Sick_LMS_291/laser_scan/layer0", 10, lidarCallback);
-    ROS_INFO("Topic for lidar initialized.");
-    while (sub_lidar_scan.getNumPublishers() == 0) {
-    }
-    ROS_INFO("Topic for lidar scan connected.");
-  } else {
-    if (!lidar_srv.response.success)
-      ROS_ERROR("Sampling period is not valid.");
-    ROS_ERROR("Failed to enable lidar.");
-    return 1;
-  }
-
+   
   // enable gps
   ros::ServiceClient set_GPS_client;
   webots_ros::set_int GPS_srv;
   ros::Subscriber sub_GPS;
   set_GPS_client = n->serviceClient<webots_ros::set_int>("pioneer3at/gps/enable");
   GPS_srv.request.value = 32;
-  if (set_GPS_client.call(GPS_srv) && GPS_srv.response.success) {
+  if (set_GPS_client.call(GPS_srv) && GPS_srv.response.success) 
     sub_GPS = n->subscribe("pioneer3at/gps/values", 1, GPSCallback);
-    while (sub_GPS.getNumPublishers() == 0) {
-    }
-    ROS_INFO("GPS enabled.");
-  } else {
-    if (!GPS_srv.response.success)
-      ROS_ERROR("Sampling period is not valid.");
-    ROS_ERROR("Failed to enable GPS.");
-    return 1;
-  }
-
+    
   // ativa inertial unit
   ros::ServiceClient set_inertial_unit_client;
   webots_ros::set_int inertial_unit_srv;
   ros::Subscriber sub_inertial_unit;
   set_inertial_unit_client = n->serviceClient<webots_ros::set_int>("pioneer3at/inertial_unit/enable");
   inertial_unit_srv.request.value = 32;
-  if (set_inertial_unit_client.call(inertial_unit_srv) && inertial_unit_srv.response.success) {
+  if (set_inertial_unit_client.call(inertial_unit_srv) && inertial_unit_srv.response.success) 
     sub_inertial_unit = n->subscribe("pioneer3at/inertial_unit/roll_pitch_yaw", 1, inertialUnitCallback);
-    while (sub_inertial_unit.getNumPublishers() == 0) {
-    }
-    ROS_INFO("Inertial unit enabled.");
-  } else {
-    if (!inertial_unit_srv.response.success)
-      ROS_ERROR("Sampling period is not valid.");
-    ROS_ERROR("Failed to enable inertial unit.");
-    return 1;
-  }
-
-
+    
   // main loop
   while (ros::ok()) {
     if (!timeStepClient.call(timeStepSrv) || !timeStepSrv.response.success) {
