@@ -1,0 +1,226 @@
+#VRML_SIM R2020a utf8
+WorldInfo {
+}
+Viewpoint {
+  orientation 0.09613300645923015 0.969247366477559 0.22653473827522788 3.931957215073961
+  position -47.9191289284571 37.87585792817935 -42.97795288690277
+}
+TexturedBackgroundLight {
+}
+Bench {
+  translation -7.12622 1.06581e-14 3.52365
+  rotation 0 1 0 -2.3561953071795863
+}
+Bench {
+  translation -8.67984 1.77636e-14 5.10116
+  rotation 0 1 0 -2.3561953071795863
+  name "bench(1)"
+}
+Bench {
+  translation -10.2605 1.77636e-14 6.70463
+  rotation 0 1 0 -2.3561953071795863
+  name "bench(2)"
+}
+RectangleArena {
+  translation -1.17887 1.42109e-14 0.98064
+  rotation 0 1 0 0.0327245
+  floorSize 30 30
+  floorTileSize 1 1
+  floorAppearance CarpetFibers {
+    type "synthetic"
+  }
+  wallHeight 1
+}
+MetallicTrash {
+  translation -5.53912 0 1.76579
+}
+PicketFenceWithDoor {
+  translation 5.51836 6.70575e-14 -9.47297
+  rotation 0 1 0 2.35619
+}
+PicketFenceWithDoor {
+  translation -7.96565 0 11.4365
+  rotation 0 1 0 -0.785395307179586
+  name "picket fence with door(1)"
+}
+PottedTree {
+  translation -2.34364 1.77636e-15 -3.85797
+  rotation 0 0 -1 -5.307179586466759e-06
+}
+PottedTree {
+  translation -0.454314 3.1606e-21 -3.84961
+  rotation 0 0 -1 -5.307179586466759e-06
+  name "potted tree(1)"
+}
+OilBarrel {
+  translation 4.09362 0.44 -8.71257
+}
+FloorLight {
+  translation -2.75837 0.03 -4.12433
+}
+FloorLight {
+  translation -0.116276 0.03 -4.05507
+  name "floor light(1)"
+}
+Carpet {
+  translation -3.10179 1.68754e-14 -6.69446
+  rotation 0 1 0 -0.785395307179586
+}
+Carpet {
+  translation 1.4844 1.77636e-14 -8.3779
+  rotation 0 1 0 0.785401
+  name "carpet(2)"
+}
+Carpet {
+  translation -0.233493 4.4409e-14 -6.68905
+  rotation 0 1 0 0.785401
+  name "carpet(3)"
+}
+Carpet {
+  translation -4.78679 1.15463e-14 -8.38588
+  rotation 0 1 0 -0.785395307179586
+  name "carpet(1)"
+}
+DEF PIONEER_3AT Pioneer3at {
+  translation 11.5574 0.11 12.844
+  rotation 0 1 0 0.785398
+  controller "ros"
+  controllerArgs "--name=pioneer3at"
+  extensionSlot [
+    Camera {
+      translation 0 0.17 -0.22
+      width 256
+      height 128
+      motionBlur 500
+      noise 0.02
+    }
+    Accelerometer {
+      lookupTable [
+        -39.24 -39.24 0.005
+        39.24 39.24 0.005
+      ]
+    }
+    Gyro {
+      lookupTable [
+        -50 -50 0.005
+        50 50 0.005
+      ]
+    }
+    SickLms291 {
+      translation 0 0.23 -0.136
+      noise 0.1
+    }
+    GPS {
+    }
+    InertialUnit {
+    }
+  ]
+}
+TeslaModel3 {
+  translation -2.65966 0.4 9.67662
+  rotation 0 1 0 1.5708
+}
+Wall {
+  translation 2.05428 0.01 -5.68745
+  rotation 0 1 0 0.811584
+  name "wall(5)"
+  size 10 1 0.1
+}
+Wall {
+  translation -7.61484 0.01 4.69532
+  rotation 2.23207e-08 -1 -9.58979e-09 -0.8115853071795867
+  name "wall(3)"
+  size 10 1 0.1
+}
+Wall {
+  translation 5.2742 0.01 -2.68421
+  rotation 0 1 0 0.811584
+  name "wall(8)"
+  size 10 1 0.1
+}
+Wall {
+  translation -4.57422 0.01 7.69139
+  rotation 0 1 0 0.811584
+  name "wall(12)"
+  size 10 1 0.1
+}
+Wall {
+  translation 2.50359 0.01 7.47194
+  rotation 0 -1 0 0.759213
+  name "wall(9)"
+  size 10 1 0.1
+}
+Wall {
+  translation 5.44195 0.01 4.30409
+  rotation 0 -1 0 0.759213
+  name "wall(10)"
+  size 10 1 0.1
+}
+Wall {
+  translation -7.80845 0.01 -2.38498
+  rotation 0 -1 0 0.759213
+  name "wall(11)"
+  size 10 1 0.1
+}
+RangeRoverSportSVR {
+  translation 7.89877 0.4 -1.12393
+  name "vehicle(1)"
+}
+Wall {
+  translation -4.95667 0.01 -5.49984
+  rotation 0 -1 0 0.759213
+  name "wall(13)"
+  size 10 1 0.1
+}
+Background {
+  skyColor [
+    0.14 0.9 1
+    0 0 0
+    0 0 0
+    0 0 0
+  ]
+}
+Sofa {
+  translation -6.26417 4.44089e-15 -7.70037
+  rotation 0 1 0 0.785398
+}
+Sofa {
+  translation -4.98185 3.55271e-15 -6.4394
+  rotation 0 1 0 0.785398
+  name "sofa(2)"
+}
+Sofa {
+  translation 3.16648 8.88175e-16 -7.71601
+  rotation 0 1 0 2.35619
+  name "sofa(1)"
+}
+Sofa {
+  translation 0.588951 4.44089e-15 -5.17853
+  rotation 0 1 0 2.35619
+  name "sofa(3)"
+}
+Sofa {
+  translation 1.8478 4.44089e-15 -6.46955
+  rotation 0 1 0 2.35619
+  name "sofa(5)"
+}
+Sofa {
+  translation -3.70054 8.88175e-16 -5.15928
+  rotation 0 -1 0 -0.785395307179586
+  name "sofa(4)"
+}
+AdvertisingBoard {
+  translation -15.2514 1.52 -12.2131
+  rotation 0 1 0 0.785398
+}
+CautionPanel {
+  translation -1.37135 0.46 -2.63763
+}
+StoneFountain {
+  translation -10.9309 -0.09 2.72114
+  rotation 0 1 0 0.261799
+}
+SnackStand {
+  translation -9.77641 0 -2.13804
+  rotation 0 1 0 2.35619
+}
