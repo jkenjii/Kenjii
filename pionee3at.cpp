@@ -12,12 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/*
- * To run gmapping you should start gmapping:
- * rosrun gmapping slam_gmapping scan:=/pioneer3at/Sick_LMS_291/laser_scan/layer0 _xmax:=30 _xmin:=-30 _ymax:=30 _ymin:=-30
- * _delta:=0.2
- */
-
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/Imu.h>
 #include <sensor_msgs/LaserScan.h>
@@ -290,31 +284,6 @@ int main(int argc, char **argv) {
     return 1;
   }
 
-  // enable accelerometer
-  ros::ServiceClient set_accelerometer_client;
-  webots_ros::set_int accelerometer_srv;
-  ros::Subscriber sub_accelerometer;
-  set_accelerometer_client = n->serviceClient<webots_ros::set_int>("pioneer3at/accelerometer/enable");
-  accelerometer_srv.request.value = 32;
-  set_accelerometer_client.call(accelerometer_srv);
-  // enable camera
-  ros::ServiceClient set_camera_client;
-  webots_ros::set_int camera_srv;
-  ros::Subscriber sub_camera;
-  set_camera_client = n->serviceClient<webots_ros::set_int>("pioneer3at/camera/enable");
-  camera_srv.request.value = 64;
-  set_camera_client.call(camera_srv);
-  // enable gyro
-  ros::ServiceClient set_gyro_client;
-  webots_ros::set_int gyro_srv;
-  ros::Subscriber sub_gyro;
-  set_gyro_client = n->serviceClient<webots_ros::set_int>("pioneer3at/gyro/enable");
-  gyro_srv.request.value = 32;
-  set_gyro_client.call(gyro_srv);
-
-  ROS_INFO("You can now start the creation of the map using 'rosrun gmapping slam_gmapping "
-           "scan:=/pioneer3at/Sick_LMS_291/laser_scan/layer0 _xmax:=30 _xmin:=-30 _ymax:=30 _ymin:=-30 _delta:=0.2'.");
-  ROS_INFO("You can now visualize the sensors output in rqt using 'rqt'.");
 
   // main loop
   while (ros::ok()) {
