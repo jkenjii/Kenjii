@@ -1,17 +1,3 @@
-// Copyright 1996-2020 Cyberbotics Ltd.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/Imu.h>
 #include <sensor_msgs/LaserScan.h>
@@ -53,29 +39,27 @@ static double rangeThreshold = 0.0;
 static std::vector<double> braitenbergCoefficients;
 static bool areBraitenbergCoefficientsinitialized = false;
 
-// gaussian function
+// gaussian 
 double gaussian(double x, double mu, double sigma) {
   return (1.0 / (sigma * sqrt(2.0 * M_PI))) * exp(-((x - mu) * (x - mu)) / (2 * sigma * sigma));
 }
 
 void updateSpeed() {
-  // init dynamic variables
+  
   double leftObstacle = 0.0, rightObstacle = 0.0, obstacle = 0.0;
   double speeds[NMOTORS];
-  // apply the braitenberg coefficients on the resulted values of the lms291
-  // near obstacle sensed on the left side
+  
   for (int i = 0; i < halfResolution; ++i) {
-    if (lidarValues[i] < rangeThreshold)  // far obstacles are ignored
+    if (lidarValues[i] < rangeThreshold)  // obstaculos longe são ignorados
       leftObstacle += braitenbergCoefficients[i] * (1.0 - lidarValues[i] / maxRange);
     // near obstacle sensed on the right side
     int j = lms291Resolution - i - 1;
     if (lidarValues[j] < rangeThreshold)
       rightObstacle += braitenbergCoefficients[i] * (1.0 - lidarValues[j] / maxRange);
   }
-  // overall front obstacle
+  
   obstacle = leftObstacle + rightObstacle;
-  // compute the speed according to the information on
-  // obstacles
+  // velocidade de acordo com os obstaculos a frente  
   if (obstacle > OBSTACLE_THRESHOLD) {
     const double speedFactor = (1.0 - DECREASE_FACTOR * obstacle) * MAX_SPEED / obstacle;
     speeds[0] = speedFactor * leftObstacle;
@@ -88,7 +72,7 @@ void updateSpeed() {
     speeds[2] = MAX_SPEED;
     speeds[3] = MAX_SPEED;
   }
-  // set speeds
+  // speeds
   for (int i = 0; i < NMOTORS; ++i) {
     ros::ServiceClient set_velocity_client;
     webots_ros::set_float set_velocity_srv;
@@ -146,7 +130,6 @@ void lidarCallback(const sensor_msgs::LaserScan::ConstPtr &scan) {
   updateSpeed();
 }
 
-// catch names of the controllers availables on ROS network
 void controllerNameCallback(const std_msgs::String::ConstPtr &name) {
   controllerCount++;
   controllerList.push_back(name->data);
@@ -200,7 +183,7 @@ int main(int argc, char **argv) {
   // leave topic once it is not necessary anymore
   nameSub.shutdown();
 
-  // init motors
+  // motores inicia
   for (int i = 0; i < NMOTORS; ++i) {
     // position
     ros::ServiceClient set_position_client;
@@ -227,7 +210,7 @@ int main(int argc, char **argv) {
       ROS_ERROR("Failed to call service set_velocity on motor %s.", motorNames[i]);
   }
 
-  // enable lidar
+  // ativa lidar
   ros::ServiceClient set_lidar_client;
   webots_ros::set_int lidar_srv;
   ros::Subscriber sub_lidar_scan;
@@ -266,7 +249,7 @@ int main(int argc, char **argv) {
     return 1;
   }
 
-  // enable inertial unit
+  // ativa inertial unit
   ros::ServiceClient set_inertial_unit_client;
   webots_ros::set_int inertial_unit_srv;
   ros::Subscriber sub_inertial_unit;
